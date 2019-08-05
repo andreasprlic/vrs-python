@@ -34,7 +34,7 @@ from flask import Flask, redirect
 
 from ga4gh.vr import schema_path
 
-port = 5000
+port = 5200
 
 def start_vr_server(port=port):
     app = Flask(__name__)

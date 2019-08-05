@@ -4,14 +4,20 @@ Items created here are singletons within the thread
 
 """
 
+import logging
 import os
 
 from flask import current_app
 
-from .manager import Manager
+import ga4gh.vr
+from ga4gh.vr.extras.translator import Translator
+from ga4gh.vr.extras.dataproxy import SeqRepoRESTDataProxy
 
 
-anyvar_db_fn = os.path.expanduser("/tmp/anyvar")
+_logger = logging.getLogger(__name__)
+
+seqrepo_rest_service_url = "http://localhost:5000/seqrepo"
+
 
 
 def _get_g(k, fn):
@@ -22,9 +28,16 @@ def _get_g(k, fn):
         setattr(current_app, k, v)
     return v
 
-def _create_Manager():
-    return Manager(storage=None)
 
-def get_manager():
-    return _get_g("_vmc_manager", _create_Manager)
+def _create_Translator():
+    dp = SeqRepoRESTDataProxy(base_url=seqrepo_rest_service_url)
+    return Translator(data_proxy=dp)
+
+def get_translator():
+    return _get_g("_vr_translator", _create_Translator)
+
+
+
+
+
     
