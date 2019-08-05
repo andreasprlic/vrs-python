@@ -1,0 +1,202 @@
+openapi: 3.0.0
+
+info:
+  title: VR
+  description: >-
+    Demonstration REST interface for translating variation
+    representations
+
+  contact:
+    name: Reece Hart
+    email: reecehart@gmail.com
+  version: 0.0.0
+
+tags:
+  - name: General
+  - name: Variation
+    description: All classes of primitive Variation
+
+
+paths:
+  ###########################################################################
+  # Info
+
+  /info:
+    get:
+      tags: ["General"]
+      description: >-
+        System status check and configuration
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Info"
+
+
+  ###########################################################################
+  # Variation
+  
+  /variation:
+    put:
+      tags: ["Variation"]
+      summary: Create an instance of sequence variation.
+      description: >-
+        Creates an instance of sequence variation and returns a
+        deterministically computed identifier.
+        
+        Requests with variant definitions that normalize to the same
+        interal variant result in only one record and the same
+        computed id is always returned.  That is, this endpoint is
+        idempotent, irrespective of the input definition format.
+
+        Alleles within haplotypes, and haplotypes withing genotypes,
+        are subjected to canonical ordering rules. Therefore, the
+        computed id of an haplotype in invariant with respect to the
+        order of the defined alleles. The same invariance holds for
+        genotypes and their component haplotypes.
+
+        The following input formats are permitted:
+
+          * Text (any descriptive text that purports to represent variation)
+          * Beacon (`13 : 32936732 G > C`)
+          * HGVS
+          * ISCN
+          * SPDI
+          * gnomAD (`1-55516888-G-GA`)
+
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                definition:
+                  description: >-
+                    Creates a variation instance from the provided
+                    `definition` parameter, which is interpreted
+                    according to `format` parameter.
+
+                    By default, the format is inferred from structure.
+                    When inferred, the variation will be created as a
+                    text record if other methods fail.  If format is
+                    not auto and the variant cannot be parsed
+                    appropriately, an error is returned.
+                  type: string
+                  example: "NC_000010.11:g.87894077C>T"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                  
+        400:
+          description: The variation could not be parsed or is otherwise invalid.
+        501:
+          description: >-
+            The requested resource or operation is not currently
+            supported. It may be supported in the future.
+
+
+  /text:
+    put:
+      tags: ["Variation"]
+      description: >-
+        Create an instance of unparsed text variation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                definition:
+                  description: >-
+                    Allele definition, interpreted according to format
+                  type: string
+                  example: NC_000010.11:g.87894077C>T
+              required:
+                - definition
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "http://localhost:5000/vr.json#/definitions/Text"
+                
+   
+  /allele:
+    put:
+      tags: ["Variation"]
+      description: >-
+        An Allele is a specific, single, and contiguous Sequence at a
+        Location. Each alternative Sequence may be empty, shorter,
+        longer, or the same length as the interval (e.g., due to one or
+        more indels).
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                definition:
+                  description: >-
+                    Allele definition, interpreted according to format
+                  type: string
+                  example: NC_000010.11:g.87894077C>T
+                format:
+                  description: format of definition
+                  type: string
+                  enum:
+                    - ga4gh
+                    - beacon
+                    - gnomad
+                    - hgvs
+                    - spdi
+                  default: hgvs
+                  example: hgvs
+                normalize:
+                  description: Normalize the allele in the specified direction.
+                  type: string
+                  enum:
+                    - voca
+                    - right
+                    - left
+                    - none
+                  default: right
+                  example: right
+              required:
+                - definition
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                # $ref: "http://localhost:5000/vr.json#/definitions/Allele"
+                
+
+# ######################################################################
+# COMPONENTS
+
+components:
+  schemas:
+    Info:
+      type: object
+      example:
+        dependencies:
+          anyvar:
+            version: "1.2.3"
+          ga4gh.vr:
+            version: "0.2.0"
+
+    # External references -- necessary for definitions to show up in
+    # generated docs
+    # >>> import ga4gh.vr
+    # >>> import json
+    # >>> j = json.load(open(ga4gh.vr.schema_path))
+    # >>> print("\n".join([f"{k}:\n  $ref: \"http://localhost:5000/vr.json#/definitions/{k}\"" for k in j["definitions"].keys()]))
+    
