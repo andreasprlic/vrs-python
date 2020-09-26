@@ -88,7 +88,7 @@ class Translator:
     ## INTERNAL
 
     def _from_beacon(self, beacon_expr, assembly_name=None):
-        """Parse beacon expression into VR Allele
+        """Parse beacon expression into VRS Allele
         
         #>>> a = tlr.from_beacon("13 : 32936732 G > C")
         #>>> a.as_dict()
@@ -127,7 +127,7 @@ class Translator:
 
 
     def _from_gnomad(self, gnomad_expr, assembly_name=None):
-        """Parse gnomAD-style VCF expression into VR Allele
+        """Parse gnomAD-style VCF expression into VRS Allele
 
         #>>> a = tlr.from_gnomad("1-55516888-G-GA")
         #>>> a.as_dict()
@@ -166,7 +166,7 @@ class Translator:
 
 
     def _from_hgvs(self, hgvs_expr):
-        """parse hgvs into a VR object (typically an Allele)
+        """parse hgvs into a VRS object (typically an Allele)
 
         #>>> a = tlr.from_hgvs("NM_012345.6:c.22A>T")
         #>>> a.as_dict()
@@ -261,7 +261,7 @@ class Translator:
 
 
     def _from_vrs(self, var):
-        """convert from dict representation of VR JSON to VR object"""
+        """convert from dict representation of VRS JSON to VRS object"""
         if not isinstance(var, Mapping):
             return None
         if "type" not in var:
@@ -274,7 +274,7 @@ class Translator:
 
 
     def _to_hgvs(self, vo, namespace="refseq"):
-        """generates a *list* of HGVS expressions for VR Allele.
+        """generates a *list* of HGVS expressions for VRS Allele.
 
         If `namespace` is not None, returns HGVS strings for the
         specified namespace.
@@ -285,7 +285,7 @@ class Translator:
         If no alias translations are available, an empty list is
         returned.
 
-        If the VR object cannot be expressed as HGVS, raises ValueError.
+        If the VRS object cannot be expressed as HGVS, raises ValueError.
 
         """
 
