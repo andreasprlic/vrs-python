@@ -27,7 +27,7 @@ _logger = logging.getLogger(__name__)
 
 
 class Translator:
-    """Translates various variation formats to and from GA4GH VR models
+    """Translates various variation formats to and from GA4GH VRS models
 
     All `from_` methods follow this pattern:
     * If the argument does not appear to be an appropriate type, None is returned

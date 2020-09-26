@@ -23,7 +23,7 @@ def tlr(dataproxy):
     )
 
 
-# See https://github.com/ga4gh/vr-python/issues/24
+# See https://github.com/ga4gh/vrs-python/issues/24
 # @pytest.fixture(autouse=True)
 # def setup_doctest(doctest_namespace, tlr):
 #     doctest_namespace["tlr"] = tlr
