@@ -19,8 +19,8 @@ import hgvs.edit
 import hgvs.sequencevariant
 
 from ga4gh.core import ga4gh_identify
-from ga4gh.vr import models, normalize
-from ga4gh.vr.extras.decorators import lazy_property  # this should be relocated
+from ga4gh.vrs import models, normalize
+from ga4gh.vrs.extras.decorators import lazy_property  # this should be relocated
 
 _logger = logging.getLogger(__name__)
 
@@ -413,7 +413,7 @@ if __name__ == "__main__":
     import coloredlogs
     coloredlogs.install(level="INFO")
 
-    from ga4gh.vr.dataproxy import create_dataproxy
+    from ga4gh.vrs.dataproxy import create_dataproxy
     dp = create_dataproxy("seqrepo+file:///usr/local/share/seqrepo/latest")
     tlr = Translator(data_proxy=dp)
 
